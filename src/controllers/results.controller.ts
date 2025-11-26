@@ -23,6 +23,12 @@ import { formatDate, formatGameId, getDays, groupBy } from "../helper";
 import { redisClient } from "../lib/redisClient";
 import { logger } from "../logger";
 
+const LOCALE = "en-PH";
+const LOCALE_OPTIONS = {
+  hour12: false,
+  timeZone: "Asia/Manila",
+};
+
 const cacheData = async ({
   data,
   expireSeconds,
@@ -45,15 +51,12 @@ const cacheData = async ({
   );
 };
 
-const parseResults = async (options: { url: string; byDate?: boolean }) => {
-  const phTime = new Date().toLocaleString("en-PH", {
-    hour12: false,
-    timeZone: "Asia/Manila",
-  });
+const parseResults = async (options: { url: string; filterDate?: string }) => {
+  const phTime = new Date().toLocaleString(LOCALE, LOCALE_OPTIONS);
   const cachedResults = await redisClient.get("resultsCache");
   const resetHours = [10, 14, 15, 17, 19, 20, 21];
 
-  if (cachedResults != null && !options.byDate) {
+  if (cachedResults != null && !options.filterDate) {
     logger.info(`Cache hit: ${phTime}`);
 
     return JSON.parse(cachedResults);
@@ -209,9 +212,16 @@ const parseResults = async (options: { url: string; byDate?: boolean }) => {
       });
 
     const grouped = groupBy(data, "gameId");
-    const groupedData = { date: phTime.split(",")[0], ...grouped };
+    const groupedData = {
+      date: options.filterDate
+        ? new Date(options.filterDate)
+            .toLocaleString(LOCALE, LOCALE_OPTIONS)
+            .split(",")[0]
+        : phTime.split(",")[0],
+      ...grouped,
+    };
 
-    if (options.byDate) return groupedData;
+    if (options.filterDate) return groupedData;
 
     // console.table(data);
 
@@ -318,7 +328,7 @@ export const getResultsByDateAndByGameId = async (
 
   const responseData: Record<string, Game> = await parseResults({
     url,
-    byDate: true,
+    filterDate: date,
   });
 
   const gameId = req.params.gameId as string;
@@ -410,7 +420,7 @@ export const getResultsByDate = async (req: Request, res: Response) => {
 
   const responseData = await parseResults({
     url,
-    byDate: true,
+    filterDate: date,
   });
 
   res.status(200).send(responseData);
