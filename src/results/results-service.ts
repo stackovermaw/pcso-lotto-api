@@ -4,7 +4,7 @@ import { logger } from "../logger";
 import { CORPORATIONS, GAME_IDS, LOCALE, LOCALE_OPTIONS } from "./_constants";
 
 import type { Corporation, GameID } from "./results-enum";
-import { isSameDate} from "./utils/date";
+import { isSameDate } from "./utils/date";
 
 export const parseResults = async (options: {
   url: string;

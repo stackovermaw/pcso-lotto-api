@@ -6,9 +6,9 @@ import {
   getResultsByDateAndByGameId,
   getResultsToday,
   getResultsTodayByGameId,
-} from "../controllers/results.controller";
+}
 
-export const resultsRouter = Router();
+export const old = Router();
 
 /**
  * @swagger
@@ -20,9 +20,7 @@ export const resultsRouter = Router();
  *     responses:
  *       200:
  *         description: Returns today's results.
- *
- */
-resultsRouter.get("/today", asyncWrapper(getResultsToday));
+old.get("/today", asyncWrapper(getResultsToday));
 
 /**
  * @swagger
@@ -43,9 +41,7 @@ resultsRouter.get("/today", asyncWrapper(getResultsToday));
  *       200:
  *         description: Returns results for the specified date.
  *       400:
- *         description: Returns when you sent an invalid date
- */
-resultsRouter.get("/:date", asyncWrapper(getResultsByDate));
+old.get("/:date", asyncWrapper(getResultsByDate));
 
 /**
  * @swagger
@@ -67,9 +63,7 @@ resultsRouter.get("/:date", asyncWrapper(getResultsByDate));
  *       200:
  *         description: Returns today's results for a specific game.
  *       404:
- *         description: Returns when the gameId was misspelled or invalid.
- */
-resultsRouter.get("/today/:gameId", asyncWrapper(getResultsTodayByGameId));
+old.get("/today/:gameId", asyncWrapper(getResultsTodayByGameId));
 
 /**
  * @swagger
@@ -100,6 +94,4 @@ resultsRouter.get("/today/:gameId", asyncWrapper(getResultsTodayByGameId));
  *       400:
  *         description: Returns when you sent an invalid date
  *       404:
- *         description: Returns when the gameId was misspelled or invalid.
- */
-resultsRouter.get("/:date/:gameId", asyncWrapper(getResultsByDateAndByGameId));
+old.get("/:date/:gameId", asyncWrapper(getResultsByDateAndByGameId));

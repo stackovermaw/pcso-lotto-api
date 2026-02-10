@@ -1,6 +1,6 @@
-import { Express } from "express";
+import type { Express } from "express";
 
-import { resultsRouter } from "../routes";
+import { resultsRouter } from "../results/results-route";
 
 export const routerSetup = (app: Express) => {
   app.use("/api/results", resultsRouter);
