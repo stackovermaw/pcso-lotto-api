@@ -1,15 +1,12 @@
-import { Express } from "express";
+import type { Express } from "express";
 import { pinoHttp } from "pino-http";
-import dotenv from "dotenv";
 
+import { redisClient } from "../lib/redisClient";
 import { logger } from "../logger";
 import { errorHandler } from "../middleware/error";
-import { redisClient } from "../lib/redisClient";
 
 export const appSetup = (app: Express) => {
-  const PORT = process.env.PORT || 3000;
-
-  dotenv.config();
+  const PORT = process.env.PORT || 4000;
 
   app.use(pinoHttp({ logger })).use(errorHandler);
 
