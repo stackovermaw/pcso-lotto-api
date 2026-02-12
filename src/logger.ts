@@ -9,7 +9,7 @@ export const logger = pino({
           all: true,
           translateTime: true,
         },
-        level: "trace",
+        level: process.env.NODE_ENV === "production" ? "info" : "debug",
       },
     ],
   },
