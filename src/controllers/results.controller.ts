@@ -402,13 +402,11 @@ const checkDate = (date: string) => {
 
 export const getResultsToday = async (_: Request, res: Response) => {
   const now = new Date();
-  const date = formatDate(now);
+  // const responseData = await parseResults({
+  //   url: RESULTS_BY_DATE_URL + date,
+  // });
 
-  const responseData = await parseResults({
-    url: RESULTS_BY_DATE_URL + date,
-  });
-
-  res.status(200).send(responseData);
+  res.status(200).send("nah");
 };
 
 export const getResultsByDate = async (req: Request, res: Response) => {
