@@ -1,5 +1,5 @@
-import express, { Express } from "express";
 import cors from "cors";
+import express, { type Express } from "express";
 
 export const securitySetup = (app: Express) =>
   app
