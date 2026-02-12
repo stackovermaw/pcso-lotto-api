@@ -1,8 +1,8 @@
 import * as cheerio from "cheerio";
+import createHttpError from "http-errors";
 
 import { logger } from "../logger";
 import { CORPORATIONS, GAME_IDS, LOCALE, LOCALE_OPTIONS } from "./_constants";
-
 import type { Corporation, GameID } from "./results-enum";
 import { isSameDate } from "./utils/date";
 
@@ -10,7 +10,7 @@ export const parseResults = async (options: {
   url: string;
   filterDate?: string;
 }) => {
-  const phTime = new Date().toLocaleDateString(LOCALE, LOCALE_OPTIONS);
+  const _phTime = new Date().toLocaleDateString(LOCALE, LOCALE_OPTIONS);
   // const cachedResults = await redisClient.get("");
   // const resetHours = [10, 14, 15, 17, 19, 20, 21];
 
@@ -37,14 +37,16 @@ export const parseResults = async (options: {
         const headerValue = document(tableHeadTableRowChildren[1]).text();
 
         const gameId = headerKey as GameID;
+        const now = options.filterDate
+          ? new Date(options.filterDate)
+          : new Date();
         const dateB = new Date(headerValue);
         const isValidDateB = !Number.isNaN(dateB.getTime());
 
         let isValidFigure = false;
 
         if (isValidDateB) {
-          isValidFigure =
-            GAME_IDS.includes(gameId) && isSameDate(new Date(), dateB);
+          isValidFigure = GAME_IDS.includes(gameId) && isSameDate(now, dateB);
         } else {
           isValidFigure = CORPORATIONS.includes(headerValue as Corporation);
         }
@@ -66,5 +68,9 @@ export const parseResults = async (options: {
     return games;
   } catch (error) {
     logger.error(`Error fetching results: ${error}`);
+
+    throw new createHttpError.InternalServerError(
+      "Failed to fetch results. Please try again later.",
+    );
   }
 };
