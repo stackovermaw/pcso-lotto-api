@@ -9,7 +9,7 @@ import {
 } from "./utils/date";
 import { DATE_REGEX, validate } from "./utils/validate";
 
-export const resultsRouter = Router();
+export const resultsRouterV2 = Router();
 
 /**
  * @swagger
@@ -23,7 +23,7 @@ export const resultsRouter = Router();
  *         description: Returns today's results.
  *
  */
-resultsRouter.get("/today", resultsController.getResultsToday);
+resultsRouterV2.get("/today", resultsController.getResultsToday);
 
 /**
  * @swagger
@@ -46,7 +46,7 @@ resultsRouter.get("/today", resultsController.getResultsToday);
  *       400:
  *         description: Bad Request - Invalid date format or date out of range.
  */
-resultsRouter.get(
+resultsRouterV2.get(
   "/:date",
   validate(
     v.object({
