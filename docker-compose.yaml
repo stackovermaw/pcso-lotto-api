@@ -1,22 +1,22 @@
 services:
-    server:
-        image: jiseeeh/pcso-lotto-api:latest
-        env_file:
-            - .env
-        expose:
-            - 4000
-        depends_on:
-            - redis
-        restart: on-failure 
-    redis:
-        image: redis:latest
-        restart: on-failure
-    nginx:
-        image: nginx:1.28.0
-        depends_on:
-            - server
-        ports:
-            - 80:80
-        volumes:
-            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-        restart: on-failure
+  server:
+    image: jiseeeh/pcso-lotto-api:latest
+    env_file:
+      - .env
+    expose:
+      - 4000
+    depends_on:
+      - redis
+    restart: on-failure
+  redis:
+    image: redis:latest
+    restart: on-failure
+  nginx:
+    image: nginx:1.28.0
+    depends_on:
+      - server
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    restart: on-failure
