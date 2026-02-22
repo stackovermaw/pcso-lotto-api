@@ -13,7 +13,7 @@ export const resultsRouterV2 = Router();
 
 /**
  * @swagger
- * /api/results/today:
+ * /api/v2/results/today:
  *   get:
  *     tags:
  *      - Results
@@ -27,7 +27,7 @@ resultsRouterV2.get("/today", resultsController.getResultsToday);
 
 /**
  * @swagger
- * /api/results/{date}:
+ * /api/v2/results/{date}:
  *   get:
  *     tags:
  *      - Results
@@ -38,13 +38,26 @@ resultsRouterV2.get("/today", resultsController.getResultsToday);
  *         required: true
  *         schema:
  *           type: string
+ *           pattern: '^[a-z]+-\d{1,2}-\d{4}$'
  *           example: april-6-2025
- *         description: The date for which results are requested
+ *         description: |
+ *           The date for which results are requested, in the format `month-day-year` (e.g. `april-6-2025`).
+ *
+ *           Constraints:
+ *           - Must match the format `month-day-year` (e.g. `april-6-2025`)
+ *           - Day must be valid for the given month
+ *           - Must be on or after `june-3-2024` (earliest parsable results date)
+ *           - Cannot be a future date
  *     responses:
  *       200:
  *         description: Returns results for the specified date.
  *       400:
- *         description: Bad Request - Invalid date format or date out of range.
+ *         description: |
+ *           Bad Request. Possible reasons:
+ *           - Date is not in the format `month-day-year` (e.g. `april-6-2025`)
+ *           - Day is not valid for the given month
+ *           - Date is before `june-3-2024`, the earliest parsable results date
+ *           - Date is in the future
  */
 resultsRouterV2.get(
   "/:date",

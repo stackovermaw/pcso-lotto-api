@@ -18,7 +18,7 @@ function asyncWrapper(cb: Function) {
 
 /**
  * @swagger
- * /api/results/today:
+ * /api/v1/results/today:
  *   get:
  *     tags:
  *      - Results
@@ -32,7 +32,7 @@ resultsRouterV1.get("/today", asyncWrapper(resultsController.getResultsToday));
 
 /**
  * @swagger
- * /api/results/{date}:
+ * /api/v1/results/{date}:
  *   get:
  *     tags:
  *      - Results
@@ -55,7 +55,7 @@ resultsRouterV1.get("/:date", asyncWrapper(resultsController.getResultsByDate));
 
 /**
  * @swagger
- * /api/results/today/{gameId}:
+ * /api/v1/results/today/{gameId}:
  *   get:
  *     tags:
  *      - Results
@@ -82,7 +82,7 @@ resultsRouterV1.get(
 
 /**
  * @swagger
- * /api/results/{date}/{gameId}:
+ * /api/v1/results/{date}/{gameId}:
  *   get:
  *     tags:
  *      - Results
