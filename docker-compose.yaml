@@ -1,14 +1,16 @@
 services:
     server:
-        image: jiseeeh/pcso-lotto-api:v1
+        image: jiseeeh/pcso-lotto-api:latest
         env_file:
             - .env
         expose:
             - 4000
         depends_on:
             - redis
+        restart: on-failure 
     redis:
         image: redis:latest
+        restart: on-failure
     nginx:
         image: nginx:1.28.0
         depends_on:
