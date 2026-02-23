@@ -40,7 +40,7 @@ const parseResults = async (options: { url: string; filterDate?: string }) => {
   if (cachedResults != null && !options.filterDate) {
     logger.info(`Cache hit: ${phTime}`);
 
-    return JSON.parse(cachedResults);
+    return cachedResults;
   }
 
   try {
@@ -288,7 +288,7 @@ export const getResultsTodayByGameId = async (req: Request, res: Response) => {
     logger.error(`Invalid game ID: ${gameId}`);
 
     throw new createHttpError.NotFound(
-      `The game with ID < ${gameId} > could not be found. This may be because there was no draw for it today, it has yet to occur, or the game ID was misspelled. See more at https://github.com/Jiseeeh/pcso-lotto-api?tab=readme-ov-file#all-possible-values-of-gameid.`,
+      `The game with ID < ${gameId} > could not be found. This may be because there was no draw for it today, it has yet to occur, or the game ID was misspelled.`,
     );
   }
 
@@ -319,7 +319,7 @@ export const getResultsByDateAndByGameId = async (
     logger.error(`Invalid game ID: ${gameId}`);
 
     throw new createHttpError.NotFound(
-      `The game with ID < ${gameId} > could not be found. This may be because there was no draw for it today, it has yet to occur, or the game ID was misspelled. See more at https://github.com/Jiseeeh/pcso-lotto-api?tab=readme-ov-file#all-possible-values-of-gameid.`,
+      `The game with ID < ${gameId} > could not be found. This may be because there was no draw for it today, it has yet to occur, or the game ID was misspelled.`,
     );
   }
 
@@ -360,9 +360,9 @@ const checkDate = (date: string) => {
 
   if (parseInt(day, 10) > monthDays || parseInt(day, 10) <= 0) {
     throw new createHttpError.BadRequest(
-      `Days of ${month.charAt(0).toUpperCase()}${month
+      `${month.charAt(0).toUpperCase()}${month
         .slice(1, month.length)
-        .toLowerCase()} are only ${monthDays}.`,
+        .toLowerCase()} has only ${monthDays} days.`,
     );
   }
 
