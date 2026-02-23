@@ -7,10 +7,10 @@ services:
       - 4000
     depends_on:
       - redis
-    restart: on-failure
+    restart: always
   redis:
     image: redis:latest
-    restart: on-failure
+    restart: always
   nginx:
     image: nginx:1.28.0
     depends_on:
