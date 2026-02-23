@@ -7,7 +7,7 @@ export const routerSetup = (app: Express) => {
     res.status(200).send("Nothing exploded yet"),
   );
   app.use("/api/results/today", (_, res) =>
-    res.status(301).redirect("/api/v1/results"),
+    res.status(301).redirect("/api/v1/results/today"),
   );
   app.use("/api/v1/results", resultsRouterV1);
   app.use("/api/v2/results", resultsRouterV2);
