@@ -1,4 +1,33 @@
+# Changelog
 
+# [2.0.0](https://github.com/Jiseeeh/pcso-lotto-api/compare/1.4.0...2.0.0) (2026-02-23)
+
+
+### Bug Fixes
+
+* add dist/ directory to .gitignore ([e7b7f7a](https://github.com/Jiseeeh/pcso-lotto-api/commit/e7b7f7a2c4117ab1c4e68e26adfcee2052add654))
+* filtered by date shows the current date ([bc33cd6](https://github.com/Jiseeeh/pcso-lotto-api/commit/bc33cd689db4f3dc6888ae4b902da324b76634e2))
+* old data was not being parsed ([aceab23](https://github.com/Jiseeeh/pcso-lotto-api/commit/aceab234614772a4ed5719f529d5f0c6f2ab270e))
+* update server configuration for proper listening address ([d7b7251](https://github.com/Jiseeeh/pcso-lotto-api/commit/d7b72514a6de9c2b77d8beb27ee6874f8cdb1565))
+* update server listen address to 0.0.0.0 for external access ([5e2e2ad](https://github.com/Jiseeeh/pcso-lotto-api/commit/5e2e2adf2621bde1934a271ba917a3a53e584248))
+
+
+### Features
+
+* add barrel file ([d95e7e3](https://github.com/Jiseeeh/pcso-lotto-api/commit/d95e7e368fccc9092201dcc3c198e14ca92bf1ca))
+* add biome config ([6609318](https://github.com/Jiseeeh/pcso-lotto-api/commit/660931876cd0ca1c4c0fb3c0bfe4493e0c4015d2))
+* add date utils ([47e1ba5](https://github.com/Jiseeeh/pcso-lotto-api/commit/47e1ba535b48585f8a869730f736efe1bc635216))
+* add files for the new file architecture ([df52420](https://github.com/Jiseeeh/pcso-lotto-api/commit/df52420bd01c8b6f2310aaecb23a7e71b381c86d))
+* add get results by date ([e09a8f9](https://github.com/Jiseeeh/pcso-lotto-api/commit/e09a8f9aee89cc0e298797d070ef9afc1a0eda1f))
+* add results' constants ([fa30b50](https://github.com/Jiseeeh/pcso-lotto-api/commit/fa30b503ed5ccdcf4f23f3c71d1cc98c73bb27da))
+* add reusable validator ([ecd4d08](https://github.com/Jiseeeh/pcso-lotto-api/commit/ecd4d0877570429ccd50d445a0887f2c7ae7eaab))
+* add valibot and biome ([3b5632b](https://github.com/Jiseeeh/pcso-lotto-api/commit/3b5632b715d1fbd590fadc4c3663c46c4c6a4ef2))
+* api versioning ([#4](https://github.com/Jiseeeh/pcso-lotto-api/issues/4)) ([b27af37](https://github.com/Jiseeeh/pcso-lotto-api/commit/b27af37455ba04b6e1d5a470f2901ded80ab27f6))
+* implement the new parsing of results partially ([37a65fc](https://github.com/Jiseeeh/pcso-lotto-api/commit/37a65fc7f88e1b7b47091d7804fa769e77d2cde1))
+* make compose prod only ([bb650e1](https://github.com/Jiseeeh/pcso-lotto-api/commit/bb650e1f90f68dc34d9597a0fa21c72525a2730f))
+* re add new file architecture ([404e8e8](https://github.com/Jiseeeh/pcso-lotto-api/commit/404e8e856691585a273c5305df00b088ca83c9d3))
+* reduce prod log noise ([da35e4b](https://github.com/Jiseeeh/pcso-lotto-api/commit/da35e4bd82163c40046e08317d8a68a41906746a))
+* separate docker dev config to prod config ([eb932e3](https://github.com/Jiseeeh/pcso-lotto-api/commit/eb932e3c3ee82ddfcb41d3f4a1700d495532b88e))
 
 # [1.4.0](https://github.com/Jiseeeh/pcso-lotto-api/compare/1.3.1...1.4.0) (2025-02-10)
 
