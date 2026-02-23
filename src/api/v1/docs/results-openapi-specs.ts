@@ -4,11 +4,11 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "PCSO Lotto API",
+      title: "PCSO Lotto API V1",
       version: "1.0.0",
     },
   },
-  apis: ["./src/results/results-route.ts"],
+  apis: ["./src/api/v1/results/results-route.ts"],
 };
 
-export const openapiSpecs = swaggerJsDoc(options);
+export const openapiSpecsV1 = swaggerJsDoc(options);

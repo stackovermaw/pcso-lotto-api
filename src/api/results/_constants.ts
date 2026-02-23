@@ -87,3 +87,5 @@ export const LOCALE_OPTIONS = {
   hour12: false,
   timeZone: "Asia/Manila",
 };
+
+export const CUTOVER_DATE = new Date(2024, 5, 3);

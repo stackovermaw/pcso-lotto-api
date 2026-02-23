@@ -1,27 +1,17 @@
 import * as cheerio from "cheerio";
 import createHttpError from "http-errors";
 
-import { logger } from "../logger";
-import { CORPORATIONS, GAME_IDS, LOCALE, LOCALE_OPTIONS } from "./_constants";
-import type { Corporation, GameID } from "./results-enum";
+import { logger } from "../../../logger";
+import { CORPORATIONS, GAME_IDS } from "../../results/_constants";
+import type { Corporation, GameID } from "../../results/results-enum";
+import type { ExtractedResults, GameResultsSource } from "../../results/results-types";
 import { isSameDate } from "./utils/date";
 
-export const parseResults = async (options: {
-  url: string;
-  filterDate?: string;
-}) => {
-  const _phTime = new Date().toLocaleDateString(LOCALE, LOCALE_OPTIONS);
-  // const cachedResults = await redisClient.get("");
-  // const resetHours = [10, 14, 15, 17, 19, 20, 21];
-
-  // if (cachedResults != null && !options.filterDate) {
-  //   logger.info(`Cache hit: ${phTime}`);
-  // }
-
-  const games: Record<string, Record<string, string>> = {};
+export const extractGameResults = async (source: GameResultsSource) => {
+  const games: ExtractedResults = {};
 
   try {
-    const document = await cheerio.fromURL(options.url);
+    const document = await cheerio.fromURL(source.url);
 
     document(".post_content")
       .find("figure")
@@ -37,9 +27,7 @@ export const parseResults = async (options: {
         const headerValue = document(tableHeadTableRowChildren[1]).text();
 
         const gameId = headerKey as GameID;
-        const now = options.filterDate
-          ? new Date(options.filterDate)
-          : new Date();
+        const now = source.date ? new Date(source.date) : new Date();
         const dateB = new Date(headerValue);
         const isValidDateB = !Number.isNaN(dateB.getTime());
 

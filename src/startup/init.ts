@@ -1,9 +1,9 @@
 import type { Express } from "express";
 import { pinoHttp } from "pino-http";
 
-import { redisClient } from "../lib/redisClient";
+import { redisClient } from "../api/lib/redisClient";
+import { errorHandler } from "../api/middleware/error";
 import { logger } from "../logger";
-import { errorHandler } from "../middleware/error";
 
 export const appSetup = (app: Express) => {
   const PORT = process.env.PORT || 4000;
