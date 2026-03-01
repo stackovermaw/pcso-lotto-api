@@ -1,3 +1,4 @@
+import { extractGameResultsLegacy } from "../v1/results/results-parser";
 import { extractGameResults } from "../v2/results/results-parser";
 import { CUTOVER_DATE } from "./_constants";
 import type { ExtractedResults, GameResultsSource } from "./results-types";
@@ -17,7 +18,8 @@ const strategies: Strategy[] = [
   {
     version: "legacy",
     canHandle: (date: string) => new Date(date) < CUTOVER_DATE,
-    extract: async (source: GameResultsSource) => extractGameResults(source),
+    extract: async (source: GameResultsSource) =>
+      extractGameResultsLegacy(source),
   },
 ];
 
