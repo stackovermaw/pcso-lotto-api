@@ -23,7 +23,7 @@ export const getResultsTodayByGameId = async (req: Request, res: Response) => {
   const game = responseData[gameId];
 
   if (!game) {
-    logger.error(`Invalid game ID: ${gameId}`);
+    logger.error(`[V1] Invalid game ID: ${gameId}`);
 
     throw new createHttpError.NotFound(
       `The game with ID < ${gameId} > could not be found. This may be because there was no draw for it today, it has yet to occur, or the game ID was misspelled.`,
@@ -52,7 +52,7 @@ export const getResultsByDateAndByGameId = async (
   const game = responseData[gameId];
 
   if (!game) {
-    logger.error(`Invalid game ID: ${gameId}`);
+    logger.error(`[V1] Invalid game ID: ${gameId}`);
 
     throw new createHttpError.NotFound(
       `The game with ID < ${gameId} > could not be found. This may be because there was no draw for it today, it has yet to occur, or the game ID was misspelled.`,

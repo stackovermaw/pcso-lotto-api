@@ -32,7 +32,7 @@ export const extractGameResultsLegacy = async (source: GameResultsSource) => {
   const isToday = source.date === todayDate;
 
   if (cachedResults != null && isToday) {
-    logger.info(`Cache hit: ${phTime}`);
+    logger.info(`[V1] Cache hit: ${phTime}`);
     return cachedResults;
   }
 

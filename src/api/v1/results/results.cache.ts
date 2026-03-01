@@ -74,21 +74,21 @@ export const cacheData = async ({
     });
 
     logger.info(
-      `Results cached for ${Math.round(
+      `[V1] Results cached for ${Math.round(
         expireSeconds / MS_IN_AN_HOUR,
       )} hour(s), will expire on ${expiryDate.toLocaleString("en-PH")}`,
     );
   } else {
-    logger.info(`Full fetch, minutes now: ${minNow}`);
+    logger.info(`[V1] Full fetch, minutes now: ${minNow}`);
   }
 };
 export const getCachedData = async () => {
   const cachedData = await redisClient.get("resultsCache");
   if (cachedData) {
-    logger.info("Cache hit: Returning cached results.");
+    logger.info("[V1] Cache hit: Returning cached results.");
     return JSON.parse(cachedData);
   } else {
-    logger.info("Cache miss: No cached results found.");
+    logger.info("[V1] Cache miss: No cached results found.");
     return null;
   }
 };
