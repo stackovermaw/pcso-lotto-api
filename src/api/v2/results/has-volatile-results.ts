@@ -1,6 +1,6 @@
 import type { ExtractedResults } from "../../results/results-types";
 
-const volatileValues = ["Stand by…", "*"];
+const volatileValues = ["Stand by…"];
 
 type Traversable = string | Record<string, string> | ExtractedResults;
 
