@@ -35,6 +35,6 @@ export const getCachedData = async (date: string) => {
     return JSON.parse(cachedData) as ExtractedResults;
   }
 
-  logger.info(`Cache miss for key ${key}`);
+  logger.warn(`Cache miss for key ${key}`);
   return null;
 };

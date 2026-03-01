@@ -8,6 +8,7 @@ import type {
   ExtractedResults,
   GameResultsSource,
 } from "../../results/results-types";
+import { hasVolatileValues } from "./has-volatile-results";
 import { cacheData, getCachedData } from "./results.cache";
 import { isSameDate } from "./utils/date";
 
@@ -67,7 +68,9 @@ export const extractGameResults = async (source: GameResultsSource) => {
         }
       });
 
-    await cacheData(games);
+    if (!hasVolatileValues(games)) {
+      await cacheData(games);
+    }
 
     return games;
   } catch (error) {
