@@ -13,11 +13,8 @@ export const getResultsToday = async (_req: Request, res: Response) => {
     url: RESULTS_TODAY_URL,
     date: new Date().toLocaleDateString(LOCALE, LOCALE_OPTIONS),
   });
-  
-  res.status(200).send({
-    date: new Date().toLocaleDateString(LOCALE, LOCALE_OPTIONS),
-    ...data,
-  });
+
+  res.status(200).send(data);
 };
 
 export const getResultsByDate = async (req: Request, res: Response) => {
@@ -30,8 +27,5 @@ export const getResultsByDate = async (req: Request, res: Response) => {
     date,
   });
 
-  res.status(200).send({
-    date: new Date(date).toLocaleDateString(LOCALE, LOCALE_OPTIONS),
-    ...data,
-  });
+  res.status(200).send(data);
 };

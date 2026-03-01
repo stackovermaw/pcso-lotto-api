@@ -4,13 +4,27 @@ import createHttpError from "http-errors";
 import { logger } from "../../../logger";
 import { CORPORATIONS, GAME_IDS } from "../../results/_constants";
 import type { Corporation, GameID } from "../../results/results-enum";
-import type { ExtractedResults, GameResultsSource } from "../../results/results-types";
+import type {
+  ExtractedResults,
+  GameResultsSource,
+} from "../../results/results-types";
+import { cacheData, getCachedData } from "./results.cache";
 import { isSameDate } from "./utils/date";
 
 export const extractGameResults = async (source: GameResultsSource) => {
-  const games: ExtractedResults = {};
+  const games: ExtractedResults = {
+    date: source.date,
+    results: {},
+  };
 
   try {
+    const cachedData = await getCachedData(source.date);
+
+    if (cachedData) {
+      logger.info(`Cache hit for date: ${source.date}`);
+      return cachedData;
+    }
+
     const document = await cheerio.fromURL(source.url);
 
     document(".post_content")
@@ -46,12 +60,14 @@ export const extractGameResults = async (source: GameResultsSource) => {
           const key = document(tableData[0]).text();
           const value = document(tableData[1]).text();
 
-          games[gameId] = {
-            ...games[gameId],
+          games.results[gameId] = {
+            ...games.results[gameId],
             [key]: value,
           };
         }
       });
+
+    await cacheData(games);
 
     return games;
   } catch (error) {
