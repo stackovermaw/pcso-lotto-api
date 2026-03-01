@@ -1,4 +1,4 @@
-import { MONTHS } from "../../../results/_constants";
+import { LOCALE, LOCALE_OPTIONS, MONTHS } from "../../../results/_constants";
 import type { Month } from "../../../results/results-enum";
 
 const decomposeDateString = (date: string) => {
@@ -70,4 +70,30 @@ export const isAFutureDate = (date: string) => {
   );
 
   return givenDate <= now;
+};
+
+export const isToday = (date: string): boolean => {
+  const [month, day, year] = date.split("/").map(Number);
+
+  const now = new Date();
+  const nowParts = new Intl.DateTimeFormat(LOCALE, {
+    ...LOCALE_OPTIONS,
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  })
+    .formatToParts(now)
+    .reduce(
+      (acc, part) => {
+        if (part.type === "day") acc.day = parseInt(part.value, 10);
+        if (part.type === "month") acc.month = parseInt(part.value, 10);
+        if (part.type === "year") acc.year = parseInt(part.value, 10);
+        return acc;
+      },
+      {} as { day: number; month: number; year: number },
+    );
+
+  return (
+    day === nowParts.day && month === nowParts.month && year === nowParts.year
+  );
 };
