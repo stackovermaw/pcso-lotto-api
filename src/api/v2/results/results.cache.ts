@@ -17,9 +17,7 @@ export const cacheData = async (data: ExtractedResults) => {
     return;
   }
 
-  await redisClient.set(`results:date-${data.date}`, JSON.stringify(data), {
-    EX: 60 * 60 * 24 * 7, // cache for a week
-  });
+  await redisClient.set(`results:date-${data.date}`, JSON.stringify(data));
 };
 
 export const getCachedData = async (date: string) => {
