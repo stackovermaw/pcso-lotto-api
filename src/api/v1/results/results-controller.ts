@@ -4,10 +4,9 @@ import createHttpError from "http-errors";
 import { logger } from "../../../logger";
 import { MONTHS, RESULTS_BY_DATE_URL } from "../../results/_constants";
 import { Month } from "../../results/results-enum";
-import { formatDate } from "../../v2/results/utils/date";
-import { getDays } from "./get-days";
 import type { Game } from "./results-interfaces";
 import { extractGameResultsLegacy } from "./results-parser";
+import { formatDate, getDays } from "./utils/date";
 
 export const getResultsTodayByGameId = async (req: Request, res: Response) => {
   const now = new Date();

@@ -18,8 +18,8 @@ import type {
 } from "../../results/results-enum";
 import type { GameResultsSource } from "../../results/results-types";
 import { formatDate } from "../../v2/results/utils/date";
-import { groupBy } from "../utils/group-by";
 import { formatGameId } from "./format-game-id";
+import { groupBy } from "./group-by";
 import { cacheData, getCachedData } from "./results.cache";
 import type { Game } from "./results-interfaces";
 
@@ -189,9 +189,7 @@ export const extractGameResultsLegacy = async (source: GameResultsSource) => {
 
     const grouped = groupBy(data, "gameId");
     const groupedData = {
-      date: new Date(source.date)
-        .toLocaleString(LOCALE, LOCALE_OPTIONS)
-        .split(",")[0],
+      date: new Date(source.date).toLocaleDateString(LOCALE, LOCALE_OPTIONS),
       ...grouped,
     };
 
