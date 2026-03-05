@@ -1,5 +1,6 @@
 import { extractGameResultsLegacy } from "../v1/results/results-parser";
 import { extractGameResults } from "../v2/results/results-parser";
+import { parseDate } from "../v2/results/utils/date";
 import { CUTOVER_DATE } from "./_constants";
 import type { ExtractedResults, GameResultsSource } from "./results-types";
 
@@ -12,12 +13,13 @@ type Strategy = {
 const strategies: Strategy[] = [
   {
     version: "v2",
-    canHandle: (date: string) => new Date(date) >= CUTOVER_DATE,
+    canHandle: (date: string) => parseDate(date) >= CUTOVER_DATE,
     extract: async (source: GameResultsSource) => extractGameResults(source),
   },
+  // verify if works
   {
     version: "legacy",
-    canHandle: (date: string) => new Date(date) < CUTOVER_DATE,
+    canHandle: (date: string) => parseDate(date) < CUTOVER_DATE,
     extract: async (source: GameResultsSource) =>
       extractGameResultsLegacy(source),
   },
