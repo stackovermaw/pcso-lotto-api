@@ -6,18 +6,20 @@ import { isToday as isDateToday } from "./utils/date";
 export const cacheData = async (data: ExtractedResults) => {
   const isToday = isDateToday(data.date);
 
+  const key = isToday ? "results:today" : `results:date-${data.date}`;
+
+  logger.info(
+    `[V2] Caching results for date using V2 ${data.date} with key ${key}`,
+  );
+
   if (isToday) {
-    logger.info(
-      `[V2] Caching results for date using V2 ${data.date} with key ${isToday ? "results:today" : `results:date-${data.date}`}`,
-    );
-    await redisClient.set("results:today", JSON.stringify(data), {
+    await redisClient.set(key, JSON.stringify(data), {
       EX: 60,
     });
-
     return;
   }
 
-  await redisClient.set(`results:date-${data.date}`, JSON.stringify(data));
+  await redisClient.set(key, JSON.stringify(data));
 };
 
 export const getCachedData = async (
@@ -42,7 +44,7 @@ export const acquireLock = async (date: string): Promise<boolean> => {
 
   const lockAcquired = await redisClient.set(key, "lock", {
     NX: true,
-    EX: 10,
+    EX: 20,
   });
 
   if (lockAcquired) {
