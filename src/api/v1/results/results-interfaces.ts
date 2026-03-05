@@ -1,4 +1,4 @@
-export interface Game {
+export interface Game extends Record<string, unknown> {
   gameId: string;
   description: string;
   corporation: string;

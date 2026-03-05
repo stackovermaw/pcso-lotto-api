@@ -1,7 +1,7 @@
 # PCSO Lotto Results Scrapper API
 
 > [!NOTE]  
-> If loading takes too long when you access the URL from the description, it is probably because the Render free tier services go into sleep mode during inactivity.
+> ~~If loading takes too long when you access the URL from the description, it is probably because the Render free tier services go into sleep mode during inactivity.~~
 
 A small lotto results scrapper that can scrape lotto results ranging from August 26, 2020, until present as of writing.
 
@@ -57,16 +57,20 @@ To what port the server will listen
 
 ## API Reference
 
+versions: [v1,v2]
+> or see /api/:version/docs
+
+
 ### Get results today
 
 ```http
-  GET /api/results/today
+  GET /api/v1/results/today
 ```
 
 ### Get results by gameId
 
 ```http
-  GET /api/results/today/:gameId
+  GET /api/v1/results/today/:gameId
 ```
 
 | Parameter | Type     | Description                       | Sample Value |

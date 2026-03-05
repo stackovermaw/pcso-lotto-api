@@ -3,4 +3,7 @@ export type GameResultsSource = {
   date: string;
 };
 
-export type ExtractedResults = Record<string, Record<string, string>>;
+export type ExtractedResults = {
+  date: string;
+  results: Record<string, Record<string, string>>;
+};
