@@ -10,7 +10,7 @@ import type {
 } from "../../results/results-types";
 import { hasVolatileValues } from "./has-volatile-results";
 import { acquireLock, cacheData, getCachedData } from "./results.cache";
-import { isSameDate, isToday } from "./utils/date";
+import { isSameDate, isToday, parseDate } from "./utils/date";
 
 export const extractGameResults = async (source: GameResultsSource) => {
   const cachedData = await getCachedData(source.date);
@@ -30,19 +30,27 @@ export const extractGameResults = async (source: GameResultsSource) => {
     : `results:date-${source.date}-lock`;
 
   let lockOwned = false;
-  const now = source.date ? new Date(source.date) : new Date();
-  const document = await cheerio.fromURL(source.url);
+  const now = source.date ? parseDate(source.date) : new Date();
 
   try {
+    const document = await cheerio.fromURL(source.url);
     lockOwned = await acquireLock(source.date);
     if (!lockOwned) {
-      logger.info(`[V2] Waiting for lock to be released for date ${source.date}`);
+      logger.info(
+        `[V2] Waiting for lock to be released for date ${source.date}`,
+      );
       for (let i = 0; i < 3; i++) {
         await new Promise((resolve) => setTimeout(resolve, 300 * 2 ** i)); // exponential backoff, 300ms, 600ms, 1200ms
         const retryData = await getCachedData(source.date);
         if (retryData) return retryData;
       }
-      return games;
+
+      logger.warn(
+        `[V2] Failed to acquire results lock for date ${source.date} after retries`,
+      );
+      throw new createHttpError.ServiceUnavailable(
+        "Results are currently being updated. Please try again shortly.",
+      );
     }
 
     document(".post_content")

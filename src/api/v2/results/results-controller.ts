@@ -7,11 +7,12 @@ import {
   RESULTS_TODAY_URL,
 } from "../../results/_constants";
 import { getResults } from "../../results/results-service";
+import { formatDate } from "./utils/date";
 
 export const getResultsToday = async (_req: Request, res: Response) => {
   const data = await getResults({
     url: RESULTS_TODAY_URL,
-    date: new Date().toLocaleDateString(LOCALE, LOCALE_OPTIONS),
+    date: formatDate(new Date().toLocaleDateString(LOCALE, LOCALE_OPTIONS)),
   });
 
   res.status(200).send(data);

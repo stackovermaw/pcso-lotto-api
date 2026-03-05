@@ -9,12 +9,34 @@ const decomposeDateString = (date: string) => {
   return { month, day, year, givenMonthIndex };
 };
 
-export const formatDate = (date: Date) => {
+export const formatDate = (input: Date | string) => {
+  let date: Date;
+
+  if (typeof input === "string") {
+    // parse M/D/YYYY manually
+    const [month, day, year] = input.split("/").map(Number);
+    date = new Date(year, month - 1, day);
+  } else {
+    date = input;
+  }
+
+  if (Number.isNaN(date.getTime())) {
+    throw new Error("Invalid date");
+  }
+
   const month = MONTHS[date.getMonth()];
   const day = date.getDate();
   const year = date.getFullYear();
 
   return `${month}-${day}-${year}`;
+};
+
+export const parseDate = (date: string): Date => {
+  const { day, year, givenMonthIndex, month } = decomposeDateString(date);
+
+  if (givenMonthIndex === -1) throw new Error(`Invalid month: ${month}`);
+
+  return new Date(parseInt(year, 10), givenMonthIndex, parseInt(day, 10));
 };
 
 export const isSameDate = (dateA: Date, dateB: Date) =>
@@ -73,7 +95,7 @@ export const isAFutureDate = (date: string) => {
 };
 
 export const isToday = (date: string): boolean => {
-  const [month, day, year] = date.split("/").map(Number);
+  const { day, month, year } = decomposeDateString(date);
 
   const now = new Date();
   const nowParts = new Intl.DateTimeFormat(LOCALE, {
@@ -94,6 +116,8 @@ export const isToday = (date: string): boolean => {
     );
 
   return (
-    day === nowParts.day && month === nowParts.month && year === nowParts.year
+    parseInt(year, 10) === nowParts.year &&
+    parseInt(month, 10) === nowParts.month &&
+    parseInt(day, 10) === nowParts.day
   );
 };
