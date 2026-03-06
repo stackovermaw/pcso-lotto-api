@@ -6,7 +6,7 @@ import { errorHandler } from "../api/middleware/error";
 import { logger } from "../logger";
 
 export const appSetup = (app: Express) => {
-  const PORT = process.env.PORT || 4000;
+  const PORT = process.env.PORT || 3000;
 
   app.use(pinoHttp({ logger })).use(errorHandler);
 
