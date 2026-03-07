@@ -16,7 +16,6 @@ const strategies: Strategy[] = [
     canHandle: (date: string) => parseDate(date) >= CUTOVER_DATE,
     extract: async (source: GameResultsSource) => extractGameResults(source),
   },
-  // verify if works
   {
     version: "legacy",
     canHandle: (date: string) => parseDate(date) < CUTOVER_DATE,
