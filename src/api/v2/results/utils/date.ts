@@ -95,7 +95,7 @@ export const isAFutureDate = (date: string) => {
 };
 
 export const isToday = (date: string): boolean => {
-  const { day, month, year } = decomposeDateString(date);
+  const { day, givenMonthIndex, year } = decomposeDateString(date);
 
   const now = new Date();
   const nowParts = new Intl.DateTimeFormat(LOCALE, {
@@ -107,6 +107,7 @@ export const isToday = (date: string): boolean => {
     .formatToParts(now)
     .reduce(
       (acc, part) => {
+        console.log({ part });
         if (part.type === "day") acc.day = parseInt(part.value, 10);
         if (part.type === "month") acc.month = parseInt(part.value, 10);
         if (part.type === "year") acc.year = parseInt(part.value, 10);
@@ -115,9 +116,11 @@ export const isToday = (date: string): boolean => {
       {} as { day: number; month: number; year: number },
     );
 
-  return (
+  const isSameDate =
     parseInt(year, 10) === nowParts.year &&
-    parseInt(month, 10) === nowParts.month &&
-    parseInt(day, 10) === nowParts.day
-  );
+    // add 1 to givenMonthIndex since it's 0-indexed but the formatted month is 1-indexed
+    givenMonthIndex + 1 === nowParts.month &&
+    parseInt(day, 10) === nowParts.day;
+
+  return isSameDate;
 };
