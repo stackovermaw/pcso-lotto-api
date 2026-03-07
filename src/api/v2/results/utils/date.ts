@@ -107,7 +107,6 @@ export const isToday = (date: string): boolean => {
     .formatToParts(now)
     .reduce(
       (acc, part) => {
-        console.log({ part });
         if (part.type === "day") acc.day = parseInt(part.value, 10);
         if (part.type === "month") acc.month = parseInt(part.value, 10);
         if (part.type === "year") acc.year = parseInt(part.value, 10);
