@@ -8,15 +8,17 @@ services:
     depends_on:
       - redis
     restart: always
+
   redis:
     image: redis:latest
     restart: always
-  nginx:
-    image: nginx:1.28.0
-    depends_on:
-      - server
-    ports:
-      - 80:80
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    restart: on-failure
+
+  # nginx:
+  #   image: nginx:1.28.0
+  #   depends_on:
+  #     - server
+  #   ports:
+  #     - 80:80
+  #   volumes:
+  #     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+  #   restart: on-failure
