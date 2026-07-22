@@ -1,10 +1,17 @@
 services:
   server:
     image: jiseeeh/pcso-lotto-api:latest
+    build: .
     env_file:
       - .env
-    expose:
-      - 9000
+    ports:
+      - 9000:9000
+    # ? some ISPs hijack lottopcso.com's DNS and answer with a block page,
+    # ? whose self-signed cert node rejects with UNABLE_TO_VERIFY_LEAF_SIGNATURE
+    # ill try in prod if this is still an issue, but for now ill comment this
+    # dns:
+    #   - 1.1.1.1
+    #   - 8.8.8.8
     depends_on:
       - redis
     restart: always
