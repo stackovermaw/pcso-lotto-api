@@ -2,15 +2,43 @@ import * as cheerio from "cheerio";
 import createHttpError from "http-errors";
 import { logger } from "../../../logger";
 import { redisClient } from "../../lib/redisClient";
-import { CORPORATIONS, GAME_IDS } from "../../results/_constants";
-import type { Corporation, GameID } from "../../results/results-enum";
+import { GAME_IDS } from "../../results/_constants";
+import type { GameID } from "../../results/results-enum";
 import type {
   ExtractedResults,
   GameResultsSource,
 } from "../../results/results-types";
 import { hasVolatileValues } from "./has-volatile-results";
+import { parseCity } from "./parse-city";
 import { acquireLock, cacheData, getCachedData } from "./results.cache";
 import { isSameDate, isToday, parseDate } from "./utils/date";
+
+type CollectedGame = {
+  gameId: GameID;
+  city: string | null;
+  results: Record<string, string>;
+};
+
+// ? a game can be drawn in more than one city on the same date (e.g. STL
+// ? Swer3), so we collect them separately and only suffix the city when the
+// ? same game id shows up more than once.
+const toResults = (collected: Map<string, CollectedGame>) => {
+  const occurrences = new Map<GameID, number>();
+  for (const { gameId } of collected.values()) {
+    occurrences.set(gameId, (occurrences.get(gameId) ?? 0) + 1);
+  }
+
+  const results: ExtractedResults["results"] = {};
+  for (const game of collected.values()) {
+    const { gameId, city } = game;
+    const isDuplicate = (occurrences.get(gameId) ?? 0) > 1;
+    const key = isDuplicate && city ? `${gameId} (${city})` : gameId;
+
+    results[key] = { ...results[key], ...game.results };
+  }
+
+  return results;
+};
 
 export const extractGameResults = async (source: GameResultsSource) => {
   const cachedData = await getCachedData(source.date);
@@ -31,6 +59,7 @@ export const extractGameResults = async (source: GameResultsSource) => {
 
   let lockOwned = false;
   const now = source.date ? parseDate(source.date) : new Date();
+  const collected = new Map<string, CollectedGame>();
 
   try {
     const document = await cheerio.fromURL(source.url);
@@ -70,26 +99,38 @@ export const extractGameResults = async (source: GameResultsSource) => {
         const dateB = new Date(headerValue);
         const isValidDateB = !Number.isNaN(dateB.getTime());
 
+        const city = isValidDateB ? null : parseCity(headerValue);
+
         let isValidFigure = false;
         if (isValidDateB) {
           isValidFigure = GAME_IDS.includes(gameId) && isSameDate(now, dateB);
         } else {
-          isValidFigure = CORPORATIONS.includes(headerValue as Corporation);
+          isValidFigure = GAME_IDS.includes(gameId) && city !== null;
         }
 
         if (!isValidFigure) return;
+
+        // ? keying by city too keeps a game drawn in two cities from
+        // ? overriding itself, since both tables share the same row keys
+        const collectedKey = `${gameId}|${city ?? ""}`;
+        const game = collected.get(collectedKey) ?? {
+          gameId,
+          city,
+          results: {},
+        };
 
         for (const tableRow of tableBodyChildren) {
           const tableData = document(tableRow).children();
           const key = document(tableData[0]).text();
           const value = document(tableData[1]).text();
 
-          games.results[gameId] = {
-            ...games.results[gameId],
-            [key]: value,
-          };
+          game.results[key] = value;
         }
+
+        collected.set(collectedKey, game);
       });
+
+    games.results = toResults(collected);
 
     if (!hasVolatileValues(games)) {
       await cacheData(games);
