@@ -53,6 +53,14 @@ export const CORPORATIONS = [
   Corporation.OLD_LAPU_LAPU_CITY,
 ];
 
+// ? used to tell apart games that are drawn by more than one corporation
+// ? on the same date, e.g. "STL Swer3 (Lapu-Lapu City)"
+export const CORPORATION_LABELS: Record<Corporation, string> = {
+  [Corporation.LAPU_LAPU_CITY]: "Lapu-Lapu City",
+  [Corporation.OLD_LAPU_LAPU_CITY]: "Lapu-Lapu City",
+  [Corporation.MANDAUE_CITY]: "Mandaue City",
+};
+
 export const DESCRIPTION_KEYS = [
   GameKeys.WINNING_COMBINATION,
   GameKeys.WINNING_COMBINATION_EXACT,

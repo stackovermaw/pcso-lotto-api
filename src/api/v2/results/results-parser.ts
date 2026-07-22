@@ -2,7 +2,11 @@ import * as cheerio from "cheerio";
 import createHttpError from "http-errors";
 import { logger } from "../../../logger";
 import { redisClient } from "../../lib/redisClient";
-import { CORPORATIONS, GAME_IDS } from "../../results/_constants";
+import {
+  CORPORATION_LABELS,
+  CORPORATIONS,
+  GAME_IDS,
+} from "../../results/_constants";
 import type { Corporation, GameID } from "../../results/results-enum";
 import type {
   ExtractedResults,
@@ -11,6 +15,34 @@ import type {
 import { hasVolatileValues } from "./has-volatile-results";
 import { acquireLock, cacheData, getCachedData } from "./results.cache";
 import { isSameDate, isToday, parseDate } from "./utils/date";
+
+type CollectedGame = {
+  gameId: GameID;
+  corporation: Corporation | null;
+  results: Record<string, string>;
+};
+
+// ? a game can be drawn by more than one corporation on the same date
+// ? (e.g. STL Swer3), so we collect them separately and only suffix the
+// ? corporation's city when the same game id shows up more than once.
+const toResults = (collected: Map<string, CollectedGame>) => {
+  const occurrences = new Map<GameID, number>();
+  for (const { gameId } of collected.values()) {
+    occurrences.set(gameId, (occurrences.get(gameId) ?? 0) + 1);
+  }
+
+  const results: ExtractedResults["results"] = {};
+  for (const game of collected.values()) {
+    const { gameId, corporation } = game;
+    const isDuplicate = (occurrences.get(gameId) ?? 0) > 1;
+    const label = corporation ? CORPORATION_LABELS[corporation] : null;
+    const key = isDuplicate && label ? `${gameId} (${label})` : gameId;
+
+    results[key] = { ...results[key], ...game.results };
+  }
+
+  return results;
+};
 
 export const extractGameResults = async (source: GameResultsSource) => {
   const cachedData = await getCachedData(source.date);
@@ -31,6 +63,7 @@ export const extractGameResults = async (source: GameResultsSource) => {
 
   let lockOwned = false;
   const now = source.date ? parseDate(source.date) : new Date();
+  const collected = new Map<string, CollectedGame>();
 
   try {
     const document = await cheerio.fromURL(source.url);
@@ -71,25 +104,37 @@ export const extractGameResults = async (source: GameResultsSource) => {
         const isValidDateB = !Number.isNaN(dateB.getTime());
 
         let isValidFigure = false;
+        let corporation: Corporation | null = null;
         if (isValidDateB) {
           isValidFigure = GAME_IDS.includes(gameId) && isSameDate(now, dateB);
         } else {
           isValidFigure = CORPORATIONS.includes(headerValue as Corporation);
+          if (isValidFigure) corporation = headerValue as Corporation;
         }
 
         if (!isValidFigure) return;
+
+        // ? keying by corporation too keeps a game drawn by two corporations
+        // ? from overriding itself, since both tables share the same row keys
+        const collectedKey = `${gameId}|${corporation ?? ""}`;
+        const game = collected.get(collectedKey) ?? {
+          gameId,
+          corporation,
+          results: {},
+        };
 
         for (const tableRow of tableBodyChildren) {
           const tableData = document(tableRow).children();
           const key = document(tableData[0]).text();
           const value = document(tableData[1]).text();
 
-          games.results[gameId] = {
-            ...games.results[gameId],
-            [key]: value,
-          };
+          game.results[key] = value;
         }
+
+        collected.set(collectedKey, game);
       });
+
+    games.results = toResults(collected);
 
     if (!hasVolatileValues(games)) {
       await cacheData(games);
